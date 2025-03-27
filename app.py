@@ -5,7 +5,7 @@ from langage_analyser import LanguageAnalyzer
 st.title("Analyseur de documents OCR")
 
 # Barre latérale pour la navigation entre les pages
-page = st.sidebar.radio("Navigation", ["OCR", "Détecter Langue"])
+page = st.sidebar.radio("Navigation", ["OCR", "Détecter Langue", "Type de document"])
 
 # Utilisation de session_state pour conserver le texte extrait entre les interactions
 if "extracted_text" not in st.session_state:
@@ -44,7 +44,7 @@ elif page == "Détecter Langue":
 elif page == "Type de document":
     st.write("Deviner le type de document avec le texte extrait.")
     if st.session_state.extracted_text:
-        st.text_area("texte extrait", st.session_state.extract_text, height=300)
+        st.text_area("texte extrait", st.session_state.extracted_text, height=300)
         if st.button("Deviner type de document"):
             from doctype import Doctype
             doc_classifier = Doctype()
