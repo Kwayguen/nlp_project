@@ -57,3 +57,16 @@ elif page == "Détecter le type de document":
             st.write("Confiance :", confidence)
     else:
         st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")
+
+
+elif page == "Type de document":
+    st.write("Deviner le type de document avec le texte extrait.")
+    if st.session_state.extracted_text:
+        st.text_area("texte extrait", st.session_state.extracted_text, height=300)
+        if st.button("Deviner type de document"):
+            from doctype import Doctype
+            doc_classifier = Doctype()
+            doc_type = doc_classifier.guess_document_type(st.session_state.extracted_text)
+            st.write("Type de document :", doc_type)
+    else:
+        st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")
