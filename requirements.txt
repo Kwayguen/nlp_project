@@ -1,3 +1,8 @@
 streamlit
 pytesseract
 pdf2image
+langdetect 
+googletrans==4.0.0-rc1
+pillow
+transformers 
+sentencepiece
