@@ -39,3 +39,6 @@ elif page == "Détecter Langue":
             st.write("La langue détectée est :", language)
     else:
         st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")
+
+
+    
