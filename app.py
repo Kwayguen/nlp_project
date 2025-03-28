@@ -2,11 +2,13 @@ import streamlit as st
 from ocr_processor import OCRProcessor
 from langage_analyser import LanguageAnalyzer
 from document_type_detector import DocumentTypeDetector
+from document_summarizer import DocumentSummarizer
+
 
 st.title("Analyseur de documents OCR")
 
 # Barre latérale pour la navigation entre les pages
-page = st.sidebar.radio("Navigation", ["OCR", "Détecter Langue + traduction", "Détecter le type de document"])
+page = st.sidebar.radio("Navigation", ["OCR", "Détecter Langue + traduction", "Détecter le type de document", "Résumer le document"])
 
 # Utilisation de session_state pour conserver le texte extrait entre les interactions
 if "extracted_text" not in st.session_state:
@@ -52,5 +54,18 @@ elif page == "Détecter le type de document":
             doc_type, confidence = detector.detect_document_type(st.session_state.extracted_text)
             st.write("Type de document détecté :", doc_type)
             st.write("Confiance :", confidence)
+    else:
+        st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")
+
+elif page == "Résumer le document":
+    st.write("Résumer le document à partir du texte extrait.")
+    if st.session_state.extracted_text:
+        st.text_area("Texte extrait", st.session_state.extracted_text, height=300)
+        if st.button("Résumer le Document"):
+            from document_summarizer import DocumentSummarizer  # Assurez-vous que ce fichier est accessible
+            summarizer = DocumentSummarizer()
+            summary = summarizer.summarize_text(st.session_state.extracted_text, max_length=150)
+            st.subheader("Résumé du document")
+            st.text_area("Résumé du document", summary, height=150)
     else:
         st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")

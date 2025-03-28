@@ -19,8 +19,9 @@ class DocumentTypeDetector:
             "relevé bancaire",
             "contrat",
             "lettre",
-            "document administratif",
-            "document juridique"
+            "document juridique",
+            "sujet d'évaluation",
+            "page de livre"
         ]
 
     def detect_document_type(self, text):
