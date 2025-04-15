@@ -39,7 +39,7 @@ class LanguageAnalyzer:
         
         La traduction est réalisée via le modèle Hugging Face approprié.
         
-        :param text: texte à traduire
+        :param text: texte à traduire 
         :return: texte traduit ou message d'erreur si la langue n'est pas supportée.
         """
         lang = self.detect_language(text)

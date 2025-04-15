@@ -69,3 +69,4 @@ elif page == "Résumer le document":
             st.text_area("Résumé du document", summary, height=150)
     else:
         st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")
+
