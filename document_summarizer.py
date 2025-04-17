@@ -1,43 +1,69 @@
+# document_summarizer.py  –  résumé FR fiable
+from __future__ import annotations
 from transformers import pipeline
-import logging
+import language_tool_python, unicodedata, re, logging
+
+_SUM_MODEL = "plguillou/t5-base-fr-sum-cnndm"   # modèle FR dispo sur HF
+_TOOL      = language_tool_python.LanguageTool("fr")  # correcteur grammaire
+
+def _clean(txt: str) -> str:
+    """Nettoyage minimal : accents, ponctuation, espaces."""
+    txt = unicodedata.normalize("NFKC", txt)
+    txt = re.sub(r"[^\w\s.,;:!?()€%/-]", " ", txt)
+    return re.sub(r"\s+", " ", txt).strip()
 
 class DocumentSummarizer:
-    """
-    Classe pour résumer un texte à l'aide d'un modèle de Hugging Face.
-    Par défaut, le modèle utilisé est "facebook/bart-large-cnn".
-    """
+    """Génère un résumé *en français* tout en corrigeant la grammaire."""
 
-    def __init__(self, model_name: str = "facebook/bart-large-cnn", device: int = -1):
-        """
-        Initialise le pipeline de résumé.
-        
-        Args:
-            model_name (str): Nom du modèle Hugging Face à utiliser.
-            device (int): -1 pour utiliser le CPU, sinon le numéro du GPU.
-        """
+    def __init__(self, model_name: str | None = None, device: int = -1):
+        model_name = model_name or _SUM_MODEL
         try:
-            self.summarizer = pipeline("summarization", model=model_name, device=device)
+            self.pipe = pipeline(
+                task="summarization",
+                model=model_name,
+                tokenizer=model_name,
+                device=device
+            )
         except Exception as e:
-            logging.error(f"Erreur lors du chargement du modèle '{model_name}': {e}")
-            raise e
+            logging.error(f"Impossible de charger le modèle {model_name}: {e}")
+            raise
 
-    def summarize_text(self, text: str, max_length: int = 130, min_length: int = 30, do_sample: bool = False) -> str:
-        """
-        Génère un résumé du texte fourni.
-        
-        Args:
-            text (str): Le texte à résumer.
-            max_length (int): Longueur maximale du résumé généré.
-            min_length (int): Longueur minimale du résumé généré.
-            do_sample (bool): Si True, active l'échantillonnage (utile pour des variations).
-        
-        Returns:
-            str: Le résumé généré.
-        """
+    def summarize_text(
+        self,
+        text: str,
+        max_length: int = 120,
+        min_length: int = 20,
+        do_sample: bool = False
+    ) -> str:
+        if not text or not text.strip():
+            return ""
+
         try:
-            # Appel au pipeline de résumé
-            summary = self.summarizer(text, max_length=max_length, min_length=min_length, do_sample=do_sample)
-            return summary[0]['summary_text']
+            # 1) pré‑nettoyage
+            txt = _clean(text)
+
+            # 2) préfixe requis par T5
+            if not txt.lower().startswith("summarize:"):
+                txt = "summarize: " + txt
+
+            # 3) résumé
+            raw = self.pipe(
+                txt,
+                max_length=max_length,
+                min_length=min_length,
+                do_sample=do_sample,
+                clean_up_tokenization_spaces=True,
+            )[0]["summary_text"]
+
+            # 4) relecture grammaticale
+            return _TOOL.correct(raw).strip()
+
         except Exception as e:
-            logging.error(f"Erreur lors de la génération du résumé: {e}")
-            return f"Erreur lors de la génération du résumé: {e}"
+            logging.error(f"Erreur de résumé: {e}")
+            return f"⚠️ Erreur lors du résumé : {e}"
+
+# utilisation rapide
+if __name__ == "__main__":
+    doc = """AVENIR, société en cours de constitution…
+    La Société est une société par actions simplifiée unipersonnelle…"""
+    print(DocumentSummarizer()(doc))

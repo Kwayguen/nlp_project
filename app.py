@@ -50,12 +50,17 @@ elif page == "Détecter le type de document":
     if st.session_state.extracted_text:
         st.text_area("Texte extrait", st.session_state.extracted_text, height=300)
         if st.button("Détecter Type de Document"):
-            detector = DocumentTypeDetector()
-            doc_type, confidence = detector.detect_document_type(st.session_state.extracted_text)
-            st.write("Type de document détecté :", doc_type)
-            st.write("Confiance :", confidence)
+            if "doc_detector" not in st.session_state:
+                st.session_state.doc_detector = DocumentTypeDetector()
+            scores = st.session_state.doc_detector(st.session_state.extracted_text)
+
+            st.subheader("Scores (ordre décroissant)")
+            for label, sc in scores:
+                st.write(f"- **{label}** : {sc:.2%}")
     else:
         st.warning("Aucun texte disponible. Veuillez d'abord extraire le texte sur la page OCR.")
+
+
 
 elif page == "Résumer le document":
     st.write("Résumer le document à partir du texte extrait.")
