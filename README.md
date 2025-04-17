@@ -2,7 +2,7 @@ Analyseur de documents OCR
 
 Cette application Streamlit vous permet de traiter des documents (images) pour en extraire du texte via OCR, détecter la langue, traduire, déterminer le type de document et générer un résumé.
 
-📁 Structure du projet
+# 📁 Structure du projet
 
 nlp_project/
 ├── Documents/                # dossier de vos documents locaux
@@ -30,46 +30,43 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # si néce
 python3 -m venv venv
 source venv/bin/activate
 
-Installer les dépendances : 
+# Installer les dépendances : 
 pip install --upgrade pip
 pip install -r requirements.txt
 
-Installer Tesseract OCR
-
+# Installer Tesseract OCR
 Téléchargez l’installeur Windows (bundle UB Mannheim) ici :
 https://github.com/UB-Mannheim/tesseract/wiki
-
 Installez et ajoutez le chemin vers tesseract.exe dans la variable d’environnement PATH.
-
 Vérifiez l’installation :
 tesseract --version
 
-🚀 Lancement de l’application
+# 🚀 Lancement de l’application
 Dans le dossier racine :
 streamlit run app.py
 
 Ouvrez ensuite dans votre navigateur :
 http://localhost:8501
 
-🖼️ Page « OCR »
+# 🖼️ Page « OCR »
 Source du document :
 Téléverser un fichier (JPG, JPEG, PNG, BMP, TIFF, PDF)
 Documents locaux : choisissez un fichier dans Documents/ à la racine.
 Extraction : utilise Tesseract pour récupérer le texte brut.
 
-🌐 Page « Détecter Langue + traduction »
+# 🌐 Page « Détecter Langue + traduction »
 Détecte la langue (français/anglais) du texte extrait.
 Traduit automatiquement vers l’autre langue via MarianMT.
 
-📄 Page « Détecter le type de document »
+# 📄 Page « Détecter le type de document »
 Classifie le texte en 8 types : identité, passeport, facture, relevé bancaire, contrat, lettre, document juridique, sujet d’évaluation.
 Utilise un modèle zero-shot (DeBERTa + XNLI) et des règles heuristiques.
 
-📝 Page « Résumer le document »
+# 📝 Page « Résumer le document »
 Génère un résumé court (max 150 tokens) du texte extrait.
 Basé sur un modèle de résumé (ex. BART ou T5).
 
-🛠️ Déploiement en ligne
+# 🛠️ Déploiement en ligne
 Streamlit Community Cloud
 
 Formats supportés : JPG, JPEG, PNG, BMP, TIFF, PDF, TIF.
