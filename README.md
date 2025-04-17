@@ -5,33 +5,47 @@ Cette application Streamlit vous permet de traiter des documents (images) pour e
 # 📁 Structure du projet
 
 nlp_project/
+
 ├── Documents/                # dossier de vos documents locaux
+
 ├── ocr_processor.py          # extraction OCR via Tesseract
+
 ├── langage_analyser.py       # détection de langue et traduction automatique
+
 ├── document_type_detector.py # classification du type de document (zero-shot)
+
 ├── document_summarizer.py    # génération de résumé
+
 ├── app.py                    # interface Streamlit
+
 ├── requirements.txt          # dépendances Python
+
 └── README.md                 # ce fichier
 
 ⚙️ Installation et configuration
 Cloner le dépôt
+
 git clone https://github.com/<votre‑user>/<nom‑du‑repo>.git
+
 cd nlp_project
 
 Créer et activer un environnement virtuel Python (recommandé)
 
 # Windows PowerShell
 python -m venv venv
+
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # si nécessaire
+
 .\venv\Scripts\activate
 
 # Linux / macOS
 python3 -m venv venv
+
 source venv/bin/activate
 
 # Installer les dépendances : 
 pip install --upgrade pip
+
 pip install -r requirements.txt
 
 # Installer Tesseract OCR
