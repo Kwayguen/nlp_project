@@ -83,7 +83,8 @@ Basé sur un modèle de résumé (ex. BART ou T5).
 # 🛠️ Déploiement en ligne
 Streamlit Community Cloud
 
-Formats supportés : JPG, JPEG, PNG, BMP, TIFF, PDF, TIF.
+Url de l'application en ligne : https://nlpproject-dyowzremci2ede3v3ditky.streamlit.app/
 
-Auteur : Roumagne Hugo & Maulavé Julien – April 2025
+Formats supportés : JPG, JPEG, PNG, BMP, TIFF, PDF, TIF.
+Auteur : Roumagne Hugo & Maulavé Julien – Avril 2025
 
