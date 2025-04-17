@@ -61,9 +61,3 @@ class DocumentSummarizer:
         except Exception as e:
             logging.error(f"Erreur de résumé: {e}")
             return f"⚠️ Erreur lors du résumé : {e}"
-
-# utilisation rapide
-if __name__ == "__main__":
-    doc = """AVENIR, société en cours de constitution…
-    La Société est une société par actions simplifiée unipersonnelle…"""
-    print(DocumentSummarizer()(doc))
