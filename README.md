@@ -57,6 +57,8 @@ tesseract --version
 
 Notre choix c'est porté sur Easyocr, plus simple pour la mise en ligne sur Streamlit Community Cloud. Nous avons tout de même garder le code pour l'utilisation de Tesseract 
 
+Seulement ce choix fait que les performances de la détection du type de document avec l'ORC Easyocr sont moins efficaces que Tesseract mais gardent tout de même de bons résultats.
+
 # 🚀 Lancement de l’application
 Dans le dossier racine :
 streamlit run app.py
