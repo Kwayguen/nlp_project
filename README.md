@@ -1,4 +1,4 @@
-Analyseur de documents OCR
+# Analyseur de documents OCR
 
 Cette application Streamlit vous permet de traiter des documents (images) pour en extraire du texte via OCR, détecter la langue, traduire, déterminer le type de document et générer un résumé.
 
