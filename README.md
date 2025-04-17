@@ -92,5 +92,6 @@ Url de l'application en ligne : https://nlpproject-dyowzremci2ede3v3ditky.stream
 # Attention ! USAGE DE l'APPLICATION EN LIGNE LIMITE ! 
 
 Formats supportés : JPG, JPEG, PNG, BMP, TIFF, PDF, TIF.
+
 Auteur : Roumagne Hugo & Maulavé Julien – Avril 2025
 
