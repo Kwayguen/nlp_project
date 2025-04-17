@@ -48,12 +48,14 @@ pip install --upgrade pip
 
 pip install -r requirements.txt
 
-# Installer Tesseract OCR
+# Installer Tesseract OCR ou Easyocr
 Téléchargez l’installeur Windows (bundle UB Mannheim) ici :
 https://github.com/UB-Mannheim/tesseract/wiki
 Installez et ajoutez le chemin vers tesseract.exe dans la variable d’environnement PATH.
 Vérifiez l’installation :
 tesseract --version
+
+Notre choix c'est porté sur Easyocr, plus simple pour la mise en ligne sur Streamlit Community Cloud. Nous avons tout de même garder le code pour l'utilisation de Tesseract 
 
 # 🚀 Lancement de l’application
 Dans le dossier racine :

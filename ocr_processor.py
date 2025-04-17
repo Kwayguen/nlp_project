@@ -1,53 +1,62 @@
-import pytesseract
+# ocr_processor.py – extraction de texte avec EasyOCR
+
+import io
+import numpy as np
 from PIL import Image
-import tempfile
-import os
-from pdf2image import convert_from_path
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+from pdf2image import convert_from_bytes
+import easyocr
+import torch
 
 class OCRProcessor:
     """
-    Classe pour extraire le texte d'un fichier image ou PDF en utilisant OCR.
-    Nécessite : pytesseract, pillow, pdf2image et poppler (pour pdf2image).
+    Classe pour extraire le texte d'un fichier image ou PDF en utilisant EasyOCR.
+    Nécessite : easyocr, pillow, pdf2image (et poppler pour PDF).
     """
-    def __init__(self):
-        pass
 
-    def extract_text_from_image(self, image):
-        """Extrait le texte d'une image PIL."""
-        return pytesseract.image_to_string(image)
-
-    def extract_text_from_pdf(self, file):
+    def __init__(self, langs: list[str] | None = None):
         """
-        Extrait le texte d'un fichier PDF.
-        Le fichier est sauvegardé temporairement, converti en images puis traité.
+        langs : liste de codes de langue pour EasyOCR (ex. ['fr','en']).
         """
-        # Sauvegarde du PDF dans un fichier temporaire
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-            tmp.write(file.read())
-            tmp_path = tmp.name
+        langs = langs or ["fr", "en"]
+        # GPU si disponible, sinon CPU
+        use_gpu = torch.cuda.is_available()
+        self.reader = easyocr.Reader(langs, gpu=use_gpu)
 
-        # Conversion du PDF en images (une image par page)
-        pages = convert_from_path(tmp_path)
-        text = ""
+    def extract_text_from_image(self, image: Image.Image) -> str:
+        """
+        Extrait le texte d'une image PIL.Image via EasyOCR.
+        """
+        img = image.convert("RGB")
+        arr = np.array(img)
+        # detail=0 => on ne récupère que les chaînes
+        lines = self.reader.readtext(arr, detail=0)
+        return "\n".join(lines)
+
+    def extract_text_from_pdf(self, file_obj: io.BytesIO) -> str:
+        """
+        Extrait le texte d'un PDF :
+        - Lit les bytes
+        - Convertit en images (une page = une image)
+        - OCR page par page
+        """
+        file_obj.seek(0)
+        pdf_bytes = file_obj.read()
+        pages = convert_from_bytes(pdf_bytes)
+        all_text = []
         for page in pages:
-            text += self.extract_text_from_image(page) + "\n"
+            all_text.append(self.extract_text_from_image(page))
+        return "\n\n".join(all_text)
 
-        # Suppression du fichier temporaire
-        os.remove(tmp_path)
-        return text
-
-    def extract_text(self, file, file_extension):
+    def extract_text(self, file_obj: io.BytesIO, file_extension: str) -> str:
         """
-        Extrait le texte du fichier en fonction de son extension.
-        file : objet file-like (par exemple un BytesIO)
-        file_extension : extension du fichier (ex: "pdf", "jpg", "png", etc.)
+        Routeur selon l'extension.
+        file_extension : 'pdf', 'jpg', 'png', etc.
         """
-        file.seek(0)  # Réinitialiser le curseur
-        if file_extension.lower() in ['jpg', 'jpeg', 'png', 'bmp', 'tiff']:
-            image = Image.open(file)
+        ext = file_extension.lower()
+        if ext in ["jpg", "jpeg", "png", "bmp", "tiff", "tif"]:
+            image = Image.open(file_obj)
             return self.extract_text_from_image(image)
-        elif file_extension.lower() == 'pdf':
-            return self.extract_text_from_pdf(file)
+        elif ext == "pdf":
+            return self.extract_text_from_pdf(file_obj)
         else:
-            raise ValueError("Format de fichier non supporté : " + file_extension)
+            raise ValueError(f"Format non supporté : {file_extension}")
